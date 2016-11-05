@@ -1,6 +1,6 @@
 {
   "name": "bundle-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bundle your JavaScript projects for either the browser or Node.js",
   "main": "index.js",
   "repository": {

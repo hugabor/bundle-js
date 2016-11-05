@@ -176,6 +176,8 @@ function bundle(options = {}) {
     } else if (options.export) {
         concatenatedSource += '\nreturn ' + options.export + ';'
         concatenatedSource = 'var ' + options.export + ' = (function(){' + concatenatedSource + '})();'
+    } else if (options.iife) {
+        concatenatedSource = '(function(){' + concatenatedSource + '})();'
     }
 
     concatenatedSource = beautify(concatenatedSource, { indent_size: 4 })
@@ -189,6 +191,7 @@ function bundle(options = {}) {
         process.stdout.write(concatenatedSource)
     }
 
+    return concatenatedSource
 }
 
 /******************************************************************************/
