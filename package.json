@@ -1,0 +1,40 @@
+{
+  "name": "bundle-js",
+  "version": "0.1.0",
+  "description": "Bundle your JavaScript projects for either the browser or Node.js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugabor/bundle-js.git"
+  },
+  "bin": {
+    "bundle-js": "./bin/bundle-js.js"
+  },
+  "keywords": [
+    "bundle",
+    "js",
+    "browser",
+    "module",
+    "package",
+    "concat",
+    "concatenate",
+    "rollup",
+    "roll",
+    "up"
+  ],
+  "author": "hugabor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hugabor/bundle-js/issues"
+  },
+  "homepage": "https://github.com/hugabor/bundle-js#readme",
+  "engines": {
+    "node": ">=6.8.1"
+  },
+  "dependencies": {
+    "caller-path": "^2.0.0",
+    "file": "^0.2.2",
+    "js-beautify": "^1.6.4",
+    "toposort": "^1.0.0"
+  }
+}
