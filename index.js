@@ -191,6 +191,7 @@ function bundle(options = {}) {
         process.stdout.write(concatenatedSource)
     }
 
+    return concatenatedSource
 }
 
 /******************************************************************************/
