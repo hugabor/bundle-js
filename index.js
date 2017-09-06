@@ -130,7 +130,7 @@ function bundle(options = {}) {
         let fileList = []
         fileUtils.walkSync(normalizeDirPath(base, options.dir), function(dirPath, dirs, files) {
             for (let i = 0; i < files.length; ++i) {
-                if (files[i].endsWith('.js'))
+                if (files[i].endsWith('.js') && (!options.dir_ignore_prefix || !files[i].startsWith(options.dir_ignore_prefix)))
                     fileList.push(normalizeFilePath(base, pathUtils.resolve(base, dirPath, files[i])))
             }
         })
