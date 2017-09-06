@@ -21,6 +21,8 @@ for (let i = 2; i < process.argv.length; ++i) {
         options.exposed = [process.argv[i].split('=')[1]]
     } else if (process.argv[i].indexOf('export=') == 0) {
         options.export = process.argv[i].split('=')[1]
+    } else if (process.argv[i].indexOf('--ignore-sort') == 0) {
+        options.ignore_sort = true
     } else if (process.argv[i].indexOf('--iife') == 0) {
         options.iife = true
     }
