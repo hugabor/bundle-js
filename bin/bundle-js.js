@@ -13,6 +13,8 @@ for (let i = 2; i < process.argv.length; ++i) {
         options.entry = process.argv[i].split('=')[1]
     } else if (process.argv[i].indexOf('dir=') == 0) {
         options.dir = process.argv[i].split('=')[1]
+    } else if (process.argv[i].indexOf('dir-ignore-prefix=') == 0) {
+        options.dir_ignore_prefix = process.argv[i].split('=')[1]
     } else if (process.argv[i].indexOf('target=') == 0) {
         options.target = process.argv[i].split('=')[1]
     } else if (process.argv[i].indexOf('exposed=') == 0) {
