@@ -105,9 +105,13 @@ class FileGraph {
 
 
 
-function getConcatOrderFromFileList(absPaths) {
+function getConcatOrderFromFileList(absPaths, sort) {
     let fileGraph = new FileGraph(...absPaths)
-    return toposort.array(fileGraph.getAsArray(), fileGraph.generateEdges()).reverse()
+    
+    if (sort)
+        return toposort.array(fileGraph.getAsArray(), fileGraph.generateEdges()).reverse()
+    else
+        return fileGraph.getAsArray()
 }
 
 /******************************************************************************/
@@ -115,17 +119,18 @@ function getConcatOrderFromFileList(absPaths) {
 function bundle(options = {}) {
 
     let base = options.dir || pathUtils.resolve(pathUtils.dirname(callerPath()))
+    let sort = (options.ignore_sort ? false : true)
 
     let concatOrder = []
 
     if (options.entry) {
-        concatOrder = getConcatOrderFromFileList( [ normalizeFilePath(base, options.entry) ] )
+        concatOrder = getConcatOrderFromFileList( [ normalizeFilePath(base, options.entry) ], sort )
     } else if (options.files) {
         let fileList = []
         for (let i = 0; i < options.files.length; ++i) {
             fileList.push(normalizeFilePath(base, options.files[i]))
         }
-        concatOrder = getConcatOrderFromFileList(fileList)
+        concatOrder = getConcatOrderFromFileList(fileList, sort)
     } else if (options.dir) {
         let fileList = []
         fileUtils.walkSync(normalizeDirPath(base, options.dir), function(dirPath, dirs, files) {
@@ -134,7 +139,7 @@ function bundle(options = {}) {
                     fileList.push(normalizeFilePath(base, pathUtils.resolve(base, dirPath, files[i])))
             }
         })
-        concatOrder = getConcatOrderFromFileList(fileList)
+        concatOrder = getConcatOrderFromFileList(fileList, sort)
     }
 
 
