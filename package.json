@@ -1,7 +1,7 @@
 {
   "name": "bundle-js",
   "version": "1.0.0",
-  "description": "Bundle your JavaScript files",
+  "description": "Bundle your inter-dependent Javascript files in the correct order",
   "main": "index.js",
   "repository": {
     "type": "git",
