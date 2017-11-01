@@ -1,7 +1,7 @@
 {
   "name": "bundle-js",
-  "version": "0.1.1",
-  "description": "Bundle your JavaScript projects for either the browser or Node.js",
+  "version": "1.0.0",
+  "description": "Bundle your JavaScript files",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
     "concatenate",
     "rollup",
     "roll",
-    "up"
+    "up",
+    "require",
+    "include"
   ],
   "author": "hugabor",
   "license": "MIT",
@@ -32,9 +34,8 @@
     "node": ">=6.8.1"
   },
   "dependencies": {
-    "caller-path": "^2.0.0",
-    "file": "^0.2.2",
     "js-beautify": "^1.6.4",
-    "toposort": "^1.0.0"
+    "optimist": "^0.6.1",
+    "resolve": "^1.4.0"
   }
 }

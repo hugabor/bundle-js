@@ -1,27 +1,31 @@
 #!/usr/bin/env node
 
-const bundle = require('../index.js')
+const optimist = require('optimist')
 
-let options = {}
+const globals = require('../globals.js')
 
-options.dir = process.cwd()
+let argv = optimist
+    .demand(1)
+    .options('o', { alias : ['out', 'dest'], default: globals.DEFAULT_OUTPUT_FILE, describe: 'Output file' })
+    .options('p', { boolean: true, alias : ['print'], describe: 'Print the final bundled output to stdout' })
+    .options('disable-beautify', { boolean: true, describe: 'Leave the concatenated files as-is (might be ugly!)' })
+    .usage(
+        '\n' +
+        'Usage: bundle-js ./path/to/entryfile.js [-o ./path/to/outputfile] [-p]\n' +     // 80 character line width limit here
+        '       [--disable-beautify]'
+    )
+    .argv
 
-for (let i = 2; i < process.argv.length; ++i) {
-    if (process.argv[i].indexOf('o=') == 0 || process.argv[i].indexOf('out=') == 0 || process.argv[i].indexOf('dest=') == 0) {
-        options.dest = process.argv[i].split('=')[1]
-    } else if (process.argv[i].indexOf('entry=') == 0) {
-        options.entry = process.argv[i].split('=')[1]
-    } else if (process.argv[i].indexOf('dir=') == 0) {
-        options.dir = process.argv[i].split('=')[1]
-    } else if (process.argv[i].indexOf('target=') == 0) {
-        options.target = process.argv[i].split('=')[1]
-    } else if (process.argv[i].indexOf('exposed=') == 0) {
-        options.exposed = [process.argv[i].split('=')[1]]
-    } else if (process.argv[i].indexOf('export=') == 0) {
-        options.export = process.argv[i].split('=')[1]
-    } else if (process.argv[i].indexOf('--iife') == 0) {
-        options.iife = true
-    }
+if (argv._[0] == 'help') {
+    optimist.showHelp()
+    process.exit()
 }
 
+let options = {}
+options.entryfilepath = argv._[0]
+options.destfilepath = argv.o
+options.print = argv.p
+options.disablebeautify = argv['disable-beautify']
+
+const bundle = require('../index.js')
 bundle(options)
