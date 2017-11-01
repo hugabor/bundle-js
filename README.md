@@ -8,134 +8,110 @@ Install:
 
 ## What It Does
 
-Concatenates your .js files.
+Concatenates your Javascript files.
 
-Just add require comments (`// require dependecy.js`) to the top of your files and bundle-js will automatically concatenate every file that is needed by every file into one single bundled script.
+Just add require comments (`// require ./dependecy.js`) or (`// include ./inc/smallfile.js`) to your files and bundle-js will automatically concatenate every file that is needed by every file into one single bundled script.
 
-It uses [topological sorting](https://en.wikipedia.org/wiki/Topological_sorting) (with [toposort](https://www.npmjs.com/package/toposort)) to determine the order in which to concatenate so you don't have to worry about having anything undefined. However, as a result of using topological sorting, bundle-js does **NOT support circular dependencies**.
+It uses [topological sorting](https://en.wikipedia.org/wiki/Topological_sorting) to determine the order in which to concatenate so you don't have to worry about having anything undefined. However, as a result of this, bundle-js does **NOT support circular dependencies**.
 
-You can either specify a single file to be an entry point, or you can provide a list of files to concatenate, or you can just provide a single directory to find all .js files in.
-
-The output is a single js script that can optionally be written to a specified output file.
-
-You may choose to bundle for the browser, in which case the output is wrapped in an [IIFE](http://benalman.com/news/2010/11/immediately-invoked-function-expression/) and your specified exported fields are attached to the `window`. You may choose to bundle as a CommonJS module, in which case your specified exported fields will be attached to `module.exports`.
+The output is a single JS script that can be written to an output file.
 
 ## Usage
 
+Within your javascript files you can use comments to indicate what external files are needed by the current file.
+
++ Using `// require ./path/to/file.js` ensures that the "required" file comes before the current file in the final concatenated output. Use this when developing multi-file Javascript without any module loaders.
++ Using `// include ./path/to/file.js` includes the entirety of the file directly at the location of the comment. Useful for including small snippets of code within other code. *Note: a file that is `require`-ed within a file that is `include`-ed, will still be placed at the top level of the bundled file. See `include_b` to avoid this behavior.*
++ Using `// include_b ./path/to/file.js` includes the entirety of the file **pre-bundled** directly at the location of the comment. This is useful for wrapping an entire project in something such as an [IIFE](http://benalman.com/news/2010/11/immediately-invoked-function-expression/) or to compile to a specific target such as for the browser or a node module.
+
+**Circular dependencies are not allowed (neither for requires or includes).**
+
+In order to require or include a file, you must begin the file path with `./`, `../`, or `/`. Otherwise, it will search for a node module. This is because file resolution is done using the [resolve module](https://www.npmjs.com/package/resolve), which implements the behavior of Node's `require.resolve()` ([more information here](https://nodejs.org/api/modules.html#modules_all_together)).
+
+*Note: These are not case sensitive (ie. you can freely use `REQUIRE`, `INCLUDE`, `INCLUDE_B`)*
+
 ### Options:
 
-+ **dir**: the directory within which to look for files and to find relative file paths within
-+ **entry**: the "entry point" - a single file path to start reading the dependencies from recursively
-+ **files**: an array of file paths to bundle
-+ **target**: the target environment; can be either `'module'` or `'browser'`
-+ **exposed**: an array of the names of the fields exposed by your module. If `target: 'module'`, it builds an object and assigns it to `module.exports`. If `target: 'browser'`, it attaches each field to the `window` object.
-+ **export**: the field your module exports. (Only applies when the `target: 'module'` or when `target` is not defined but `name` is)
-+ **iife**: whether or not to wrap the output in an [IIFE](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). By default `false` when `target: 'module'` and `true` when `target: 'browser'`.
-+ **name**: the name to give the IIFE that wraps the output. (Only applies when `target` is not defined.)
-+ **dest**: the output file path. If not defined, writes to stdout.
-
-If neither `entry` nor `files` is defined, all of the .js files from `dir` are processed.
++ **entry**: (required) the "entry point" - a single file path to start finding the dependencies from recursively
++ **dest**: (optional) the output file path
++ **print**: (optional) prints the output file to stdout if set to true
++ **disable-beautify**: (optional) bundle-js by default runs the final output through beautify; set this to true to disable this behavior
 
 ### Command line:
 
-    bundle-js
+    Usage: bundle-js ./path/to/entryfile.js [-o ./path/to/outputfile] [-p]
+           [--disable-beautify]
 
-Optional flags to append to command:
-
-+ `dir=...` sets `dir` option
-+ `entry=...` sets `entry` option
-+ `target=...` sets `target` option
-+ `exposed=...` sets `exposed` option to an array of a single element (Using the command line, this only accepts a single file path.)
-+ `export=...` sets `export` option
-+ `--iife` sets `iife` option as true
-+ `out=...` sets `dest` option
-+ `name=...` sets `name` option
+    Options:
+      -o, --out, --dest   Output file                                          [default: "./bundlejs/output.js"]
+      -p, --print         Print the final bundled output to stdout
+      --disable-beautify  Leave the concatenated files as-is (might be ugly!)
 
 ### Programmatic:
 
-    const bundle = require('bundle-js')    
-    bundle({ entry : './file.js' })
+    const bundle = require('bundle-js')
+    let output = bundle({ entry : './index.js' })
 
 Configuration options:
 
     bundle({
-        entry : './file.js',
-        dest : './build/bundle.js',
-        dir : 'myPrefix_',
-        files : ['./file1.js', 'file2.js', './path/to/file.js'],
-        target : 'browser',
-        exposed : ['Object1', 'Object2', 'Object3'],
-        export : 'MainObject',
-        name : 'browser',
-        iife : true
+        entry : './index.js',
+        dest : './bundle.js',
+        print : false,
+        disablebeautify : false
     })
-
-(Note: Some of these configuration options cancel each other out, this is just a list of possible fields.)
 
 ## Simple Example
 
-Eg. If in file A you have
+If in file `A.js` you have
 
-    var a = 'hello';
+    // require ./B.js
+    console.log(b + ' world!');
 
-then you can do in file B:
+and in file `B.js`
 
-    //require A
-    console.log(a + ' world');
+    var b = 'Hello';
 
-## Example Use Case
+The final output is going to look like this
 
-Suppose we have the following files:
+    var b = 'Hello';
+    console.log(b + ' world!');
 
-File `a.js`:
+## Wrapper Example
 
-    // require b.js
+In file `index.js` you have
 
-    console.log("Does it work? :", getText());
+    // require ./dep.js
+    // some code
 
-    var MyPackage = {
+in file `dep.js`
 
-        func1 : function() {
-            return getText();
-        },
-        func2 : function(prefix) {
-            return prefix + MyPackage.func1();
-        }
+    // this is a dependency
 
-    };
-
-File `b.js`
-
-    var getText = function() {
-        return "Hello, I am b.js";
-    };
-
-Then, if we run the following command:
-
-    bundle-js entry=a.js target=browser exposed=MyPackage
-
-We get the following ouput:
+Using `wrapper1.js`
 
     (function() {
-        var getText = function() {
-            return "Hello, I am b.js";
-        };
+        // include ./index.js
+    })();
 
+Will result in
 
-        console.log("Does it work? :", getText());
+    // this is a dependency
+    (function() {
+        // some code
+    })();
 
-        var MyPackage = {
+However, using `wrapper2.js`
 
-            func1: function() {
-                return getText();
-            },
-            func2: function(prefix) {
-                return prefix + MyPackage.func1();
-            }
+    (function() {
+        // include_b ./index.js
+    })();
 
-        };
+Will result in
 
-        window.MyPackage = MyPackage;
+    (function() {
+        // this is a dependency
+        // some code
     })();
 
 ## License
