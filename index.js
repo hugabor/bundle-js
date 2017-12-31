@@ -34,5 +34,3 @@ function bundle(options = {}) {
 }
 
 module.exports = bundle
-
-bundle({ entry: 'testWrapper.js', print: true} )
