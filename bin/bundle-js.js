@@ -22,8 +22,8 @@ if (argv._[0] == 'help') {
 }
 
 let options = {}
-options.entryfilepath = argv._[0]
-options.destfilepath = argv.o
+options.entry = argv._[0]
+options.dest = argv.o
 options.print = argv.p
 options.disablebeautify = argv['disable-beautify']
 
