@@ -1,6 +1,6 @@
 {
   "name": "bundle-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bundle your inter-dependent Javascript files in the correct order",
   "main": "index.js",
   "repository": {
