@@ -57,12 +57,14 @@ class File {
             }
         })
 
+        this._contentwithincludes = this.readFile();
+
         // Return contents with INCLUDE statements replaced with the inclusions
-        this._contentwithincludes = this.readFile().replace(INCLUDE_REGEX(), (m, p) => {
+        this._contentwithincludes = this._contentwithincludes.replace(INCLUDE_REGEX(), (m, p) => {
             let includedfile = this.getRelativeFile(p, existingfiles)
             return includedfile.getContentWithIncludes(existingfiles, ancestorincludes.concat([this]))
         })
-        this._contentwithincludes = this.readFile().replace(INCLUDEB_REGEX(), (m, p) => {
+        this._contentwithincludes = this._contentwithincludes.replace(INCLUDEB_REGEX(), (m, p) => {
             let includedfile = this.getRelativeFile(p)
             return bundle(includedfile.absolutefilepath, { disablebeautify: true })
         })
