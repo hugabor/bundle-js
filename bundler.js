@@ -168,7 +168,7 @@ function bundle(entryfilepath, options = {}) {
 
     if (!(options.disablebeautify == true)) {
         bundled = beautify(bundled, {
-            indent_size: 4,
+            indent_with_tabs: true,
             end_with_newline: true,
             preserve_newlines: false
         })
@@ -176,5 +176,5 @@ function bundle(entryfilepath, options = {}) {
 
     return bundled
 }
-
+/
 module.exports = { bundle: bundle }
